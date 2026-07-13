@@ -1,6 +1,7 @@
 # cuel-mp-fe — CUEL Manpower Plan (Frontend)
 
 Web frontend ของระบบ Manpower Plan (Corporate Planning) — React 18 + Vite 5 + Redux Toolkit + Tailwind CSS
+Layout และทุกหน้าอ้างอิงต้นแบบ `../Specification/Manpower_Plan.html` (อ่านอย่างเดียว)
 
 ## เริ่มต้น
 
@@ -21,29 +22,67 @@ npm run dev            # http://localhost:5173
 
 ```
 src/
-  api/        axios client + endpoints ทั้งหมด
-  constants/  roles, statuses, enums (SN/CN/SE/CE/SNW ฯลฯ), กฎ FTE
-  store/      Redux Toolkit (auth, budget year)
-  components/ Layout, Sidebar (เมนูตาม role), Header (year selector), StatusBadge, ProtectedRoute, PageStub
+  api/        axios client (token interceptor + 401 handler) + endpoints ทั้งหมด
+  constants/  roles, statuses, enums (SN/CN/SE/CE/SNW ฯลฯ), MONTHS, กฎ FTE
+  store/      Redux Toolkit
+    authSlice.js     mock auth (sessionStorage)
+    yearSlice.js     Budget Years + currentYear (add/edit/close/reopen)
+    projectSlice.js  Projects + scope rows ต่อปี
+  components/
+    Layout.jsx       header fixed 58px + sidebar 230px (พับได้) + main
+    Header.jsx       แถบ navy: ☰, logo, Budget Year selector, user badge + role tag, Sign Out
+    Sidebar.jsx      พื้นขาว เมนูตาม role ตรงตาม buildSidebar ของต้นแบบ (+เมนูย่อย Manpower Plan)
+    Modal.jsx        modal 600px header/body/footer ตามต้นแบบ
+    StatusBadge.jsx  ป้ายสถานะ workflow
+    ProtectedRoute.jsx  กัน route ตาม role
+    PageStub.jsx     placeholder หน้าที่ยังไม่ implement
   pages/
-    Login.jsx           mock auth — เลือก role ได้ระหว่างพัฒนา
-    dept/               Project Assumption, Manpower Input (3 แท็บ)
-    reports/            Analytical Report (6 แท็บ)
-    admin/              Years, Projects, Departments, Employees, Graph Priority
-    corpplan/           Dept Submissions, Consolidation
+    Login.jsx                  card 400px ตามต้นแบบ (mock auth เลือก role ได้)
+    admin/Years.jsx            ✅ Budget Year Setup — ตาราง striped + Add/Edit/Close/Re-open
+    admin/Projects.jsx         ✅ Project Setup — การ์ดโปรเจกต์ + scope rows + Gantt 12 เดือน
+    admin/Departments.jsx      ⏳ stub
+    admin/Employees.jsx        ⏳ stub
+    admin/GraphPriority.jsx    ⏳ stub
+    dept/ProjectAssumption.jsx ⏳ stub
+    dept/ManpowerInput.jsx     ⏳ stub (3 แท็บ sync กับ sidebar ผ่าน ?tab=)
+    reports/AnalyticalReport.jsx ⏳ stub (6 แท็บ)
+    corpplan/DeptSubmissions.jsx ⏳ stub
+    corpplan/Consolidation.jsx ⏳ stub
 ```
 
 ## สถานะปัจจุบัน
 
-ทุกหน้าเป็น **stub** — มี layout, routing, สิทธิ์ตาม role และรายการขอบเขตงานของแต่ละหน้า (จาก Specification) พร้อมให้ทีมพัฒนาแทนที่ทีละหน้า
+| หน้า | สถานะ | หมายเหตุ |
+|---|---|---|
+| Login | ✅ ตาม layout ต้นแบบ | mock auth — TODO ต่อ `EP.auth.login` |
+| Budget Year Setup | ✅ ครบตามต้นแบบ | ข้อมูล mock ใน yearSlice |
+| Project Setup | ✅ ครบตามต้นแบบ | TODO: คำเตือนจำนวนพนักงานที่มี allocation ตอนลบ (รอ backend) |
+| หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
+
+กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
+และทุกการเปลี่ยนแปลงต้องรัน `npm run lint` + `npm run build` ผ่าน แล้วอัพเดท README นี้ (รวม Changelog ด้านล่าง)
 
 จุดที่ต้องทำต่อเมื่อ backend พร้อม:
 1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
-2. `src/store/yearSlice.js` — โหลดปีจาก API แทน mock
-3. implement หน้าตามลำดับ: Input Plan → Dept Submissions → Admin Setup → Reports
+2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
+3. implement หน้าตามลำดับแนะนำ: Departments → Employees → Input Plan → Dept Submissions → Reports
 
 ## เอกสารอ้างอิง
 
-- Specification: `../Specification/` (อ่านอย่างเดียว)
+- Specification: `../Specification/` (อ่านอย่างเดียว — ห้ามแก้ไข)
 - Database Schema: `../Manpower_Plan_Database_Design.docx`
 - ER Diagram: `../Manpower_Plan_ERD.mermaid`
+- User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
+
+## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-13
+- เพิ่มหน้า **Project Setup** (`admin/Projects.jsx` + `projectSlice.js`) — การ์ดโปรเจกต์, Units, Rename/Delete, scope rows พร้อม Gantt 12 เดือน (logic ตาม `buildScopeGantt`), validation ครบตามต้นแบบ, ล็อกเมื่อปีปิด, HR = View Only
+- เพิ่มหน้า **Budget Year Setup** (`admin/Years.jsx`) — ตาราง striped 7 คอลัมน์, modal Add/Edit/Close, Re-open พร้อม confirm, validation "Year already exists.", HR = View Only
+- เพิ่ม component `Modal.jsx` และชุด CSS ตามต้นแบบ (`btn-proto*`, `form-label`, `form-control`, `tbl`, `alert-warning-proto`)
+- ขยาย `yearSlice` (reminderDate, cutoffDate, updatedBy + reducers add/edit/close/reopen)
+- ปรับ Layout ให้ตรงต้นแบบ: header navy fixed 58px (☰, year selector, role tag), sidebar ขาว 230px พับได้ + เมนูย่อย Manpower Plan, Login card ตามแบบ, พื้นหลัง `#f8fafc`
+
+### 2026-07-13 (แรกตั้งโปรเจกต์)
+- โครงโปรเจกต์ Vite + React 18 + Redux Toolkit + Tailwind ตาม dependencies ของ cuel-sca-fe
+- Routing + ProtectedRoute ตาม role, axios client, endpoints, หน้า stub ครบทุกเมนู
