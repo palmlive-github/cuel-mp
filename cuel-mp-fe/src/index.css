@@ -30,4 +30,45 @@
   .label {
     @apply block text-[12px] font-semibold text-slate-500 mb-1;
   }
+
+  /* ==== ชุด class ตามต้นแบบ Manpower_Plan.html ==== */
+  .btn-proto {
+    @apply inline-flex items-center gap-[5px] px-[13px] py-[7px] rounded-md text-[12px] font-semibold
+      whitespace-nowrap transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-proto-sm {
+    @apply !px-[9px] !py-1 !text-[11px];
+  }
+  .btn-prototype-primary {
+    @apply btn-proto bg-primary text-white hover:bg-primary-dark;
+  }
+  .btn-danger-proto {
+    @apply btn-proto bg-danger text-white hover:opacity-90;
+  }
+  .btn-warning-proto {
+    @apply btn-proto bg-warning text-white hover:opacity-90;
+  }
+  .btn-ghost {
+    @apply btn-proto bg-transparent text-slate-500 border border-slate-300 hover:bg-slate-100;
+  }
+  .form-label {
+    @apply block text-[11px] font-semibold text-slate-500 uppercase tracking-[.7px] mb-[5px];
+  }
+  .form-control {
+    @apply w-full border border-slate-300 rounded-md px-2.5 py-2 text-[13px] text-slate-700 bg-white outline-none
+      transition-all focus:border-primary focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)];
+  }
+  .tbl th {
+    @apply bg-[#f1f5f9] text-[#344054] text-[11px] font-bold uppercase tracking-[.4px] px-2.5 py-[9px]
+      text-left whitespace-nowrap border-r border-[#eef2f6] last:border-r-0;
+  }
+  .tbl td {
+    @apply px-2.5 py-2 border-b border-slate-200 text-slate-600 align-middle whitespace-nowrap;
+  }
+  .tbl-striped tr:nth-child(even) td {
+    @apply bg-slate-50;
+  }
+  .alert-warning-proto {
+    @apply px-3.5 py-[11px] rounded-md text-[12px] border-l-4 bg-warning-bg border-warning text-[#b45309];
+  }
 }
