@@ -1,0 +1,54 @@
+{
+  "name": "cuel-mp-fe",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.9.0",
+    "axios": "^1.12.2",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.18",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
+    "flatpickr": "^4.6.13",
+    "react": "18.3.1",
+    "react-cookie": "^8.0.1",
+    "react-currency-input-field": "^4.0.1",
+    "react-device-detect": "^2.2.3",
+    "react-dom": "18.3.1",
+    "react-flatpickr": "^4.0.11",
+    "react-pdf": "^10.3.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.9.1",
+    "react-zoom-pan-pinch": "^3.7.0",
+    "reactjs-file-preview": "^1.0.11",
+    "url-join": "^5.0.0",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-flatpickr": "^3.8.11",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.7",
+    "terser": "^5.44.1",
+    "vite": "^5.3.4"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}
