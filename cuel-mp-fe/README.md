@@ -31,6 +31,7 @@ src/
     deptSlice.js     Departments (ชื่อรายปี) + Dept Managers ต่อปี + Dept Groups + manager pool
     employeeSlice.js Employees ต่อปี + freeze setup + Oracle staging + position list
     gpSlice.js       Graph Priority 3 แผงต่อปี (clamp + compact อัตโนมัติ)
+    submissionSlice.js สถานะการส่งแผนต่อแผนกต่อปี + verify/reject/unverify + สี/label ป้ายสถานะ
   utils/
     gantt.jsx        ganttCells 12 เดือน (logic ตาม buildScopeGantt) + fmtDate — ใช้ร่วม Projects / Project Assumption
   components/
@@ -51,7 +52,7 @@ src/
     dept/ProjectAssumption.jsx ✅ Project Assumption — ตารางอ้างอิง scope + Gantt (read-only)
     dept/ManpowerInput.jsx     ⏳ stub (3 แท็บ sync กับ sidebar ผ่าน ?tab=)
     reports/AnalyticalReport.jsx ⏳ stub (6 แท็บ)
-    corpplan/DeptSubmissions.jsx ⏳ stub
+    corpplan/DeptSubmissions.jsx ✅ Department Submissions — บอร์ดตรวจสอบ + Verify/Reject/Unverify
     corpplan/Consolidation.jsx ⏳ stub
 ```
 
@@ -66,6 +67,7 @@ src/
 | Employee Setup | ✅ ครบตามต้นแบบ | mock 22 คน · Audit trail ของ Load Oracle รอ backend |
 | Graph Priority Setup | ✅ ครบตามต้นแบบ | Admin Setup ครบทั้ง 5 หน้าแล้ว |
 | Project Assumption | ✅ ครบตามต้นแบบ | read-only ทุก role ใช้ข้อมูลจาก projectSlice |
+| Department Submissions | ✅ ครบตามต้นแบบ | View modal เป็นฉบับย่อ (movements + FTE by project รอ Input Plan) |
 | หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
 
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
@@ -74,7 +76,7 @@ src/
 จุดที่ต้องทำต่อเมื่อ backend พร้อม:
 1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
 2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
-3. implement หน้าตามลำดับแนะนำ: Input Plan → Dept Submissions → Reports
+3. implement หน้าตามลำดับแนะนำ: Input Plan → Consolidation → Reports
 
 ## เอกสารอ้างอิง
 
@@ -84,6 +86,16 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-15
+- เพิ่มหน้า **Department Submissions** (`corpplan/DeptSubmissions.jsx` + `submissionSlice.js`) ตามต้นแบบ:
+  - Stat cards 6 ใบ (Total / Draft / Pending Approver / Submitted / Verified / Rejected) สีตามต้นแบบ
+  - Filter bar: Department / Manager (จาก Approver ที่กำหนดจริง) / Status + ตัวนับ "Showing N of M departments"
+  - ตาราง striped 9 คอลัมน์: Code, Department, Manager (+ Req บรรทัดสอง), Status pill สีทึบตาม `_subStatusStyle`, HC (D/I ไม่นับคน TO/Resign), Submitted, By, Verified, Action
+  - Action ตามสถานะ: 👁 View เสมอ · ✓ Verify + ✕ Reject (submitted) · Unverify (verified) · Verify ซ้ำได้ (rejected) · HR เห็นเฉพาะ View
+  - Reject modal: textarea + inline error "⚠ Reason is required." + ปุ่ม ✕ Confirm Reject แดง — reducer ล้างข้อมูล verify ตาม `confirmRejectDept`
+  - View modal ฉบับย่อ: status + Submitted/Verified info + HC/Direct/Indirect + กล่องแดงแสดง Rejection reason
+- mock สถานะปี 2027 ครบทุกแบบ (submitted/verified/pending_approver/rejected/returned) เพื่อทดสอบทุกปุ่ม
 
 ### 2026-07-14 (4)
 - เพิ่มหน้า **Project Assumption** (`dept/ProjectAssumption.jsx`) ตามต้นแบบ — หน้าอ้างอิง read-only:
