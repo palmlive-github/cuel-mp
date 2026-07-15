@@ -31,6 +31,8 @@ src/
     deptSlice.js     Departments (ชื่อรายปี) + Dept Managers ต่อปี + Dept Groups + manager pool
     employeeSlice.js Employees ต่อปี + freeze setup + Oracle staging + position list
     gpSlice.js       Graph Priority 3 แผงต่อปี (clamp + compact อัตโนมัติ)
+  utils/
+    gantt.jsx        ganttCells 12 เดือน (logic ตาม buildScopeGantt) + fmtDate — ใช้ร่วม Projects / Project Assumption
   components/
     Layout.jsx       header fixed 58px + sidebar 230px (พับได้) + main
     Header.jsx       แถบ navy: ☰, logo, Budget Year selector, user badge + role tag, Sign Out
@@ -46,7 +48,7 @@ src/
     admin/Departments.jsx      ✅ Department Setup — 3 แท็บ (List / Groups / Managers) + Copy/Export/Import
     admin/Employees.jsx        ✅ Employee Setup — Load Oracle / Freeze / filter / ตารางพนักงาน + Add/Edit/Delete
     admin/GraphPriority.jsx    ✅ Graph Priority Setup — 3 แผง auto-renumber
-    dept/ProjectAssumption.jsx ⏳ stub
+    dept/ProjectAssumption.jsx ✅ Project Assumption — ตารางอ้างอิง scope + Gantt (read-only)
     dept/ManpowerInput.jsx     ⏳ stub (3 แท็บ sync กับ sidebar ผ่าน ?tab=)
     reports/AnalyticalReport.jsx ⏳ stub (6 แท็บ)
     corpplan/DeptSubmissions.jsx ⏳ stub
@@ -63,6 +65,7 @@ src/
 | Department Setup | ✅ ครบตามต้นแบบ | Requester pool ใช้ manager pool ชั่วคราว (รอหน้า Employees) · Import รองรับ .csv ก่อน |
 | Employee Setup | ✅ ครบตามต้นแบบ | mock 22 คน · Audit trail ของ Load Oracle รอ backend |
 | Graph Priority Setup | ✅ ครบตามต้นแบบ | Admin Setup ครบทั้ง 5 หน้าแล้ว |
+| Project Assumption | ✅ ครบตามต้นแบบ | read-only ทุก role ใช้ข้อมูลจาก projectSlice |
 | หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
 
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
@@ -81,6 +84,11 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-14 (4)
+- เพิ่มหน้า **Project Assumption** (`dept/ProjectAssumption.jsx`) ตามต้นแบบ — หน้าอ้างอิง read-only:
+  การ์ดต่อโปรเจกต์ (ไม่รวม All Projects) แสดงลำดับ/ชื่อ/Category chip/Units + ตาราง Scope, Start, Finish (dd/mm/yyyy) และ Gantt 12 เดือน
+- แยก `ganttCells` + `fmtDate` เป็น `src/utils/gantt.jsx` ใช้ร่วมกันระหว่าง Project Setup กับ Project Assumption (ลดโค้ดซ้ำ)
 
 ### 2026-07-14 (3)
 - เพิ่มหน้า **Graph Priority Setup** (`admin/GraphPriority.jsx` + `gpSlice.js`) ตามต้นแบบ:

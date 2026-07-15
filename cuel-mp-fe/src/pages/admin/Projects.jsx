@@ -12,51 +12,14 @@ import {
 } from '../../store/projectSlice.js'
 import { MONTHS } from '../../constants/index.js'
 import { ROLES } from '../../constants/index.js'
+import { ganttCells } from '../../utils/gantt.jsx'
 
 /**
  * Project Setup — ตามต้นแบบ sec-projects + renderProjects:
  * การ์ดต่อโปรเจกต์ (ลำดับ, ชื่อ + System badge, Units, ปุ่ม Rename / ＋ Add Scope / Delete)
- * ตาราง Scope: ชื่อ / Start / Finish / Gantt 12 เดือน / ปุ่มลบแถว
+ * ตาราง Scope: ชื่อ / Start / Finish / Gantt 12 เดือน (utils/gantt.jsx) / ปุ่มลบแถว
  * ล็อกทั้งหน้าเมื่อปีปิด (🔒 Year Closed) · HR = View Only
  */
-
-// เซลล์ Gantt ตาม buildScopeGantt: น้ำเงินทึบ = ช่วง Start–Finish, ฟ้าเส้นประ = มีแต่ Start
-function ganttCells(year, start, finish) {
-  const yrS = String(year)
-  return MONTHS.map((m, mi) => {
-    const mStr = String(mi + 1).padStart(2, '0')
-    let cell = null
-    if (start && !finish) {
-      const active = (start.slice(0, 4) === yrS && start.slice(5, 7) === mStr) || (start.slice(0, 4) < yrS && mi === 0)
-      cell = active ? (
-        <div
-          className="h-3.5 mx-0.5 rounded-[3px] bg-blue-300 border-[1.5px] border-dashed border-primary-mid"
-          title={`Start: ${start} — Finish date not set`}
-        />
-      ) : (
-        <div className="h-3.5 mx-0.5" />
-      )
-    } else if (start && finish) {
-      const effStart = start < `${yrS}-01-01` ? `${yrS}-01-01` : start
-      const effEnd = finish > `${yrS}-12-31` ? `${yrS}-12-31` : finish
-      const mFirst = `${yrS}-${mStr}-01`
-      const mLast = `${yrS}-${mStr}-${String(new Date(year, mi + 1, 0).getDate()).padStart(2, '0')}`
-      const active = effStart <= mLast && effEnd >= mFirst
-      cell = active ? (
-        <div className="h-3.5 mx-0.5 rounded-[3px] bg-primary-mid" title={`${start} → ${finish}`} />
-      ) : (
-        <div className="h-3.5 mx-0.5" />
-      )
-    } else {
-      cell = <div className="h-3.5 mx-0.5" />
-    }
-    return (
-      <td key={m} className="px-0.5 py-[3px] border-r border-[#eef2f6] border-b border-[#f1f5f9] text-center">
-        {cell}
-      </td>
-    )
-  })
-}
 
 export default function Projects() {
   const dispatch = useDispatch()
