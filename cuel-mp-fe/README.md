@@ -30,6 +30,7 @@ src/
     projectSlice.js  Projects + scope rows ต่อปี
     deptSlice.js     Departments (ชื่อรายปี) + Dept Managers ต่อปี + Dept Groups + manager pool
     employeeSlice.js Employees ต่อปี + freeze setup + Oracle staging + position list
+    gpSlice.js       Graph Priority 3 แผงต่อปี (clamp + compact อัตโนมัติ)
   components/
     Layout.jsx       header fixed 58px + sidebar 230px (พับได้) + main
     Header.jsx       แถบ navy: ☰, logo, Budget Year selector, user badge + role tag, Sign Out
@@ -44,7 +45,7 @@ src/
     admin/Projects.jsx         ✅ Project Setup — การ์ดโปรเจกต์ + scope rows + Gantt 12 เดือน
     admin/Departments.jsx      ✅ Department Setup — 3 แท็บ (List / Groups / Managers) + Copy/Export/Import
     admin/Employees.jsx        ✅ Employee Setup — Load Oracle / Freeze / filter / ตารางพนักงาน + Add/Edit/Delete
-    admin/GraphPriority.jsx    ⏳ stub
+    admin/GraphPriority.jsx    ✅ Graph Priority Setup — 3 แผง auto-renumber
     dept/ProjectAssumption.jsx ⏳ stub
     dept/ManpowerInput.jsx     ⏳ stub (3 แท็บ sync กับ sidebar ผ่าน ?tab=)
     reports/AnalyticalReport.jsx ⏳ stub (6 แท็บ)
@@ -61,6 +62,7 @@ src/
 | Project Setup | ✅ ครบตามต้นแบบ | TODO: คำเตือนจำนวนพนักงานที่มี allocation ตอนลบ (รอ backend) |
 | Department Setup | ✅ ครบตามต้นแบบ | Requester pool ใช้ manager pool ชั่วคราว (รอหน้า Employees) · Import รองรับ .csv ก่อน |
 | Employee Setup | ✅ ครบตามต้นแบบ | mock 22 คน · Audit trail ของ Load Oracle รอ backend |
+| Graph Priority Setup | ✅ ครบตามต้นแบบ | Admin Setup ครบทั้ง 5 หน้าแล้ว |
 | หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
 
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
@@ -69,7 +71,7 @@ src/
 จุดที่ต้องทำต่อเมื่อ backend พร้อม:
 1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
 2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
-3. implement หน้าตามลำดับแนะนำ: Input Plan → Dept Submissions → Reports → Graph Priority
+3. implement หน้าตามลำดับแนะนำ: Input Plan → Dept Submissions → Reports
 
 ## เอกสารอ้างอิง
 
@@ -79,6 +81,14 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-14 (3)
+- เพิ่มหน้า **Graph Priority Setup** (`admin/GraphPriority.jsx` + `gpSlice.js`) ตามต้นแบบ:
+  - 3 แผง: By Project & Period (หัวน้ำเงิน) / By Dept Group (เขียว) / By Emp Type & Period (ม่วง) ตาราง Label + Order
+  - พิมพ์เลขแล้ว clamp เข้าช่วง 1..N และเรียงเลขทั้งแผงใหม่อัตโนมัติไม่ให้มีช่องว่าง (เลขที่พิมพ์ชนะเมื่อชนกัน) ตาม logic ต้นแบบ
+  - แถวเรียงตามลำดับ (ยังไม่ใส่ = ท้ายสุด), รายการดึงจาก projectSlice (รวม All Projects) และ deptSlice.groupDefs
+  - HR = ดูอย่างเดียว (input disabled)
+- Admin Setup ครบทั้ง 5 หน้า (Years / Projects / Departments / Employees / Graph Priority)
 
 ### 2026-07-14 (2)
 - เพิ่มหน้า **Employee Setup** (`admin/Employees.jsx` + `employeeSlice.js`) ตามต้นแบบ:
