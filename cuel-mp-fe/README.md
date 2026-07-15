@@ -28,6 +28,7 @@ src/
     authSlice.js     mock auth (sessionStorage)
     yearSlice.js     Budget Years + currentYear (add/edit/close/reopen)
     projectSlice.js  Projects + scope rows ต่อปี
+    deptSlice.js     Departments (ชื่อรายปี) + Dept Managers ต่อปี + Dept Groups + manager pool
   components/
     Layout.jsx       header fixed 58px + sidebar 230px (พับได้) + main
     Header.jsx       แถบ navy: ☰, logo, Budget Year selector, user badge + role tag, Sign Out
@@ -40,7 +41,7 @@ src/
     Login.jsx                  card 400px ตามต้นแบบ (mock auth เลือก role ได้)
     admin/Years.jsx            ✅ Budget Year Setup — ตาราง striped + Add/Edit/Close/Re-open
     admin/Projects.jsx         ✅ Project Setup — การ์ดโปรเจกต์ + scope rows + Gantt 12 เดือน
-    admin/Departments.jsx      ⏳ stub
+    admin/Departments.jsx      ✅ Department Setup — 3 แท็บ (List / Groups / Managers) + Copy/Export/Import
     admin/Employees.jsx        ⏳ stub
     admin/GraphPriority.jsx    ⏳ stub
     dept/ProjectAssumption.jsx ⏳ stub
@@ -57,6 +58,7 @@ src/
 | Login | ✅ ตาม layout ต้นแบบ | mock auth — TODO ต่อ `EP.auth.login` |
 | Budget Year Setup | ✅ ครบตามต้นแบบ | ข้อมูล mock ใน yearSlice |
 | Project Setup | ✅ ครบตามต้นแบบ | TODO: คำเตือนจำนวนพนักงานที่มี allocation ตอนลบ (รอ backend) |
+| Department Setup | ✅ ครบตามต้นแบบ | Requester pool ใช้ manager pool ชั่วคราว (รอหน้า Employees) · Import รองรับ .csv ก่อน |
 | หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
 
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
@@ -65,7 +67,7 @@ src/
 จุดที่ต้องทำต่อเมื่อ backend พร้อม:
 1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
 2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
-3. implement หน้าตามลำดับแนะนำ: Departments → Employees → Input Plan → Dept Submissions → Reports
+3. implement หน้าตามลำดับแนะนำ: Employees → Input Plan → Dept Submissions → Reports
 
 ## เอกสารอ้างอิง
 
@@ -75,6 +77,14 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-14
+- เพิ่มหน้า **Department Setup** (`admin/Departments.jsx` + `deptSlice.js`) — 3 แท็บตามต้นแบบ:
+  - Department List: ตาราง Code/Name/Alloc Type (badge Direct เขียว / Indirect เหลือง) + Edit/Delete (กันลบแผนกที่มีแผนกย่อย)
+  - Dept Groups: การ์ดกลุ่ม + chip รายแผนก, กล่องเตือนแผนกที่ยังไม่มีกลุ่ม, modal เลือกแผนกแบบ checkbox (ส้ม = อยู่กลุ่มอื่นแล้ว) + validation ห้ามซ้ำข้ามกลุ่ม
+  - Dept Managers: ตาราง Requester/Approver/Viewer auto-save + toast, validation Requester ≠ Approver, แถบเตือนแผนกไม่มี Approver, ✓/⚠ ต่อแถว
+- ปุ่มหัวหน้า: Copy from Previous Year (พร้อม confirm), Export CSV, Import CSV, ＋ Add Department (modal พร้อม Role Assignment)
+- mock data ตรงกับ INIT ของต้นแบบ: 40 แผนก, manager pool 53 ชื่อ, 10 กลุ่ม, ผู้จัดการปี 2027
 
 ### 2026-07-13
 - เพิ่มหน้า **Project Setup** (`admin/Projects.jsx` + `projectSlice.js`) — การ์ดโปรเจกต์, Units, Rename/Delete, scope rows พร้อม Gantt 12 เดือน (logic ตาม `buildScopeGantt`), validation ครบตามต้นแบบ, ล็อกเมื่อปีปิด, HR = View Only
