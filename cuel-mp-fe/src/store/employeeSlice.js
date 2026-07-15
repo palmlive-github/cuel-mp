@@ -19,7 +19,11 @@ const E = (empCode, name, position, deptCode, location, status, allocType, resig
   newRequestDate: null,
   transferInDate: null,
   transferOutDate: null,
+  allocations: {},
 })
+
+// เติมค่า FTE เท่ากันทุกเดือน (mock)
+const FULL = (v) => ({ jan: v, feb: v, mar: v, apr: v, may: v, jun: v, jul: v, aug: v, sep: v, oct: v, nov: v, dec: v })
 
 // mock ชุดย่อยจาก INIT ของต้นแบบ (ครอบคลุมหลายแผนก/หลายประเภท)
 const BASE_2027 = [
@@ -47,8 +51,24 @@ const BASE_2027 = [
   E('U1793', 'Surasak Ratanasatayanon', 'Project Finance and Cost Control Manager', 2740, 'BKK', 'SN', 'Indirect'),
 ]
 
+// mock allocations สำหรับสาธิตหน้า Consolidation/Reports (แผนกที่ submit แล้ว)
+const ALLOC_2027 = {
+  A2111: { 'CVX Phase 71/73': FULL(0.5), 'PTTEP Zawtika 1F': FULL(0.5) },
+  A2424: { 'CVX Phase 71/73': FULL(1.0) },
+  U0052: { 'PTTEP Zawtika 1F': FULL(1.0) },
+  U0082: { 'CVX Phase 71/73': FULL(0.7), 'Bundle IV': FULL(0.3) },
+  U0384: { 'CVX Phase 71/73': FULL(0.3), 'PTTEP Zawtika 1F': FULL(0.7) },
+  U0781: { 'PTTEP Zawtika 1F': FULL(1.0) },
+  U1011: { 'PTTEP Zawtika 1F': FULL(1.0) },
+}
+const BASE_WITH_ALLOC = BASE_2027.map((e) => ({
+  ...e,
+  // Indirect = แถว All Projects เติม 1.0 อัตโนมัติ (ตามกฎระบบ) · Direct = ตาม mock
+  allocations: e.allocType === 'Indirect' ? { 'All Projects': FULL(1.0) } : ALLOC_2027[e.empCode] || {},
+}))
+
 const initialState = {
-  byYear: { 2027: JSON.parse(JSON.stringify(BASE_2027)), 2026: [], 2025: [] },
+  byYear: { 2027: JSON.parse(JSON.stringify(BASE_WITH_ALLOC)), 2026: [], 2025: [] },
   // สถานะ freeze ต่อปี — ตาม INIT.employeeSetup
   setup: {
     2027: { status: 'frozen', frozenDate: '2027-09-01', frozenBy: 'Corp Plan Admin' },

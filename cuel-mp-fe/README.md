@@ -34,6 +34,7 @@ src/
     submissionSlice.js สถานะการส่งแผนต่อแผนกต่อปี + verify/reject/unverify + สี/label ป้ายสถานะ
   utils/
     gantt.jsx        ganttCells 12 เดือน (logic ตาม buildScopeGantt) + fmtDate — ใช้ร่วม Projects / Project Assumption
+    manpower.js      กฎ Manpower กลาง: getValidMonthRange (กฎวันที่ 1), getProjMonthRange (Min/Max scope), getDeptProjects, getMostAllocatedProject, MONTH_KEYS
   components/
     Layout.jsx       header fixed 58px + sidebar 230px (พับได้) + main
     Header.jsx       แถบ navy: ☰, logo, Budget Year selector, user badge + role tag, Sign Out
@@ -53,7 +54,7 @@ src/
     dept/ManpowerInput.jsx     ⏳ stub (3 แท็บ sync กับ sidebar ผ่าน ?tab=)
     reports/AnalyticalReport.jsx ⏳ stub (6 แท็บ)
     corpplan/DeptSubmissions.jsx ✅ Department Submissions — บอร์ดตรวจสอบ + Verify/Reject/Unverify
-    corpplan/Consolidation.jsx ⏳ stub
+    corpplan/Consolidation.jsx ✅ Corp Plan Consolidation — pivot พนักงาน×โปรเจกต์×12 เดือน + Export 2 แบบ
 ```
 
 ## สถานะปัจจุบัน
@@ -68,6 +69,7 @@ src/
 | Graph Priority Setup | ✅ ครบตามต้นแบบ | Admin Setup ครบทั้ง 5 หน้าแล้ว |
 | Project Assumption | ✅ ครบตามต้นแบบ | read-only ทุก role ใช้ข้อมูลจาก projectSlice |
 | Department Submissions | ✅ ครบตามต้นแบบ | View modal เป็นฉบับย่อ (movements + FTE by project รอ Input Plan) |
+| Corp Plan Consolidation | ✅ ครบตามต้นแบบ | allocations เป็น mock จนกว่า Input Plan จะพร้อม |
 | หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
 
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
@@ -76,7 +78,7 @@ src/
 จุดที่ต้องทำต่อเมื่อ backend พร้อม:
 1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
 2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
-3. implement หน้าตามลำดับแนะนำ: Input Plan → Consolidation → Reports
+3. implement หน้าตามลำดับแนะนำ: Input Plan → Analytical Reports
 
 ## เอกสารอ้างอิง
 
@@ -86,6 +88,15 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-15 (2)
+- เพิ่มหน้า **Corp Plan Consolidation** (`corpplan/Consolidation.jsx`) ตามต้นแบบ:
+  - Filter 5 ตัว: Dept / Project (กรองคนที่มี allocation ในโปรเจกต์นั้น) / Type / Movement (Existing–NR–TI–TO–Resign) / Status
+  - Stat cards 6 ใบ: Total Records, Verified HC, Submitted HC, Direct, Indirect, Year End HC (การ์ดจางตามต้นแบบ — นับคนที่ valid ถึง ธ.ค.)
+  - ตาราง pivot: 13 คอลัมน์ข้อมูล (รวม Movement badge, Mov Date, Main Project, Sub Status) + 12 เดือน + Remark, แถวพนักงานใช้ rowSpan ต่อโปรเจกต์, เซลล์นอกช่วง valid/scope เป็นสีเทา "—", แถว Monthly Total ท้ายตาราง
+  - Export 2 ปุ่ม: by Project (แถวละโปรเจกต์) และ 1 row/emp (รวม FTE ต่อเดือน)
+- เพิ่ม `src/utils/manpower.js` — port กฎจากต้นแบบ: `getValidMonthRange` (กฎวันที่ 1 ของเดือน), `getProjMonthRange` (Min/Max scope + clamp ปี), `getDeptProjects`, `getMostAllocatedProject`, `getMovDate` — เตรียมใช้ต่อใน Input Plan
+- เพิ่ม mock `allocations` ใน employeeSlice (Indirect = All Projects 1.0 ทุกเดือน, Direct 7 คนมีข้อมูลตัวอย่าง) เพื่อสาธิตตาราง Consolidation
 
 ### 2026-07-15
 - เพิ่มหน้า **Department Submissions** (`corpplan/DeptSubmissions.jsx` + `submissionSlice.js`) ตามต้นแบบ:
