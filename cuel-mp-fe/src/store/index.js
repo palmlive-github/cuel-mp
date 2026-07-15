@@ -3,6 +3,7 @@ import authReducer from './authSlice.js'
 import yearReducer from './yearSlice.js'
 import projectReducer from './projectSlice.js'
 import deptReducer from './deptSlice.js'
+import employeeReducer from './employeeSlice.js'
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     year: yearReducer,
     project: projectReducer,
     dept: deptReducer,
+    employee: employeeReducer,
   },
 })

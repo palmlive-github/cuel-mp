@@ -29,6 +29,7 @@ src/
     yearSlice.js     Budget Years + currentYear (add/edit/close/reopen)
     projectSlice.js  Projects + scope rows ต่อปี
     deptSlice.js     Departments (ชื่อรายปี) + Dept Managers ต่อปี + Dept Groups + manager pool
+    employeeSlice.js Employees ต่อปี + freeze setup + Oracle staging + position list
   components/
     Layout.jsx       header fixed 58px + sidebar 230px (พับได้) + main
     Header.jsx       แถบ navy: ☰, logo, Budget Year selector, user badge + role tag, Sign Out
@@ -42,7 +43,7 @@ src/
     admin/Years.jsx            ✅ Budget Year Setup — ตาราง striped + Add/Edit/Close/Re-open
     admin/Projects.jsx         ✅ Project Setup — การ์ดโปรเจกต์ + scope rows + Gantt 12 เดือน
     admin/Departments.jsx      ✅ Department Setup — 3 แท็บ (List / Groups / Managers) + Copy/Export/Import
-    admin/Employees.jsx        ⏳ stub
+    admin/Employees.jsx        ✅ Employee Setup — Load Oracle / Freeze / filter / ตารางพนักงาน + Add/Edit/Delete
     admin/GraphPriority.jsx    ⏳ stub
     dept/ProjectAssumption.jsx ⏳ stub
     dept/ManpowerInput.jsx     ⏳ stub (3 แท็บ sync กับ sidebar ผ่าน ?tab=)
@@ -59,6 +60,7 @@ src/
 | Budget Year Setup | ✅ ครบตามต้นแบบ | ข้อมูล mock ใน yearSlice |
 | Project Setup | ✅ ครบตามต้นแบบ | TODO: คำเตือนจำนวนพนักงานที่มี allocation ตอนลบ (รอ backend) |
 | Department Setup | ✅ ครบตามต้นแบบ | Requester pool ใช้ manager pool ชั่วคราว (รอหน้า Employees) · Import รองรับ .csv ก่อน |
+| Employee Setup | ✅ ครบตามต้นแบบ | mock 22 คน · Audit trail ของ Load Oracle รอ backend |
 | หน้าอื่นทั้งหมด | ⏳ stub | มีรายการขอบเขตงานจากสเปกกำกับในแต่ละหน้า |
 
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
@@ -67,7 +69,7 @@ src/
 จุดที่ต้องทำต่อเมื่อ backend พร้อม:
 1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
 2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
-3. implement หน้าตามลำดับแนะนำ: Employees → Input Plan → Dept Submissions → Reports
+3. implement หน้าตามลำดับแนะนำ: Input Plan → Dept Submissions → Reports → Graph Priority
 
 ## เอกสารอ้างอิง
 
@@ -77,6 +79,17 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-14 (2)
+- เพิ่มหน้า **Employee Setup** (`admin/Employees.jsx` + `employeeSlice.js`) ตามต้นแบบ:
+  - Workflow guide 3 ขั้น (Load & Confirm Oracle → Freeze → Ready) + กล่องเตือนแดงเมื่อมี manpower input แล้ว
+  - Freeze bar: badge Draft/Frozen + "Frozen on ... by ..." + ปุ่ม ❄ Freeze / 🔓 Unfreeze (confirm + กันปีปิด)
+  - Load Oracle Employee Data: modal ยืนยัน (เตือนว่าจะแทนที่ทั้งหมด) + toast สรุป added/removed; ปุ่ม disabled เมื่อ frozen/มี input/ปีปิด
+  - Filter bar (Department / Allocation Type / Search + ตัวนับ Showing N of M)
+  - ตาราง 12 คอลัมน์ครบตามต้นแบบ (dept tag, Emp Type chip 5 สี, Alloc badge, Resign Date สีแดง, Remark ellipsis)
+  - Add/Edit Employee modal ครบทุกช่อง + validation "Emp Code and Name are required." / "Emp Code already exists."
+  - เมื่อ Frozen: ซ่อน Edit/Del + ปุ่ม Add disabled — ต้อง Unfreeze ก่อน
+- Export Employee List เป็น CSV
 
 ### 2026-07-14
 - เพิ่มหน้า **Department Setup** (`admin/Departments.jsx` + `deptSlice.js`) — 3 แท็บตามต้นแบบ:
