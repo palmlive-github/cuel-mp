@@ -3,6 +3,10 @@
 Web frontend ของระบบ Manpower Plan (Corporate Planning) — React 18 + Vite 5 + Redux Toolkit + Tailwind CSS
 Layout และทุกหน้าอ้างอิงต้นแบบ `../Specification/Manpower_Plan.html` (อ่านอย่างเดียว)
 
+**Backend คู่กัน**: `../cuel-mp-be` (.NET 7 Web API) — เชื่อม CEUS DB + JWT Auth ผ่าน CEUS Session แล้ว (ดู README ฝั่งนั้น)
+Auth flow จริง: CEUS ส่ง `?Session=` มาที่ `/login` → FE เรียก `POST /api/authentications/Token` → เก็บ accessToken (15 นาที) + refreshToken (7 วัน)
+มี `public/web.config` สำหรับ deploy บน IIS (SPA rewrite, ไม่ rewrite `/api`)
+
 ## เริ่มต้น
 
 ```bash
@@ -77,10 +81,11 @@ src/
 กติกาการพัฒนา: ทุกหน้าต้องเทียบกับต้นแบบ `Manpower_Plan.html` (สี ระยะ ข้อความ validation ให้ตรง)
 และทุกการเปลี่ยนแปลงต้องรัน `npm run lint` + `npm run build` ผ่าน แล้วอัพเดท README นี้ (รวม Changelog ด้านล่าง)
 
-จุดที่ต้องทำต่อเมื่อ backend พร้อม:
-1. `src/pages/Login.jsx` — เปลี่ยน mock auth เป็นเรียก `EP.auth.login`
-2. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API (จุด dispatch แยกไว้แล้ว)
-3. implement หน้าตามลำดับแนะนำ: Input Plan → Analytical Reports
+จุดที่ต้องทำต่อ (backend มีแล้ว — เหลือเชื่อมและส่วนที่ค้าง):
+1. `src/pages/Login.jsx` + `authSlice` — เปลี่ยน mock auth เป็น flow จริง: อ่าน `?Session=` → `POST /api/authentications/Token` → เก็บ access/refresh token + auto refresh ใน `api/client.js` (endpoint `/Refresh`, `/Me` พร้อมแล้วฝั่ง BE)
+2. map role จาก BE: Admin (MP0001) / HR (MP0002) / User (MP0003) — สิทธิ์ Requester/Approver/Viewer มาจาก Department Setup
+3. `src/store/*.js` — เปลี่ยน mock data เป็นโหลดจาก API เมื่อ BE มี business endpoints (รอ MP database)
+4. implement หน้าตามลำดับแนะนำ: Input Plan → Analytical Reports
 
 ## เอกสารอ้างอิง
 
@@ -90,6 +95,12 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-16
+- **Sync ข้อมูลโปรเจกต์**: เพิ่ม `../cuel-mp-be` (.NET 7 Web API) — เชื่อม CEUS Database (EF Core scaffold, read-only) และ Authentication ครบ (CEUS Session SSO → JWT access 15 นาที + refresh 7 วัน, endpoints Token/Refresh/Me, roles MP0000–MP0003) — ดูรายละเอียดใน `../cuel-mp-be/README.md`
+- FE มี `public/web.config` สำหรับ deploy IIS (SPA rewrite + exclude `/api` + client cache 1 ชม.)
+- อัพเดทหัวข้อ "จุดที่ต้องทำต่อ" ให้ตรงสถานะจริง (auth ฝั่ง BE พร้อมแล้ว เหลือเชื่อมฝั่ง FE)
+- หมายเหตุ: งานพัฒนาหลักอยู่ใน git repo (branch dev) ของทีม — โฟลเดอร์นี้เป็น reference copy อาจตามหลัง working copy
 
 ### 2026-07-15 (5)
 - **ตาราง scroll ตามขนาดหน้าจอ ครบทุกหน้าที่มีตาราง/รายการใหญ่**:
