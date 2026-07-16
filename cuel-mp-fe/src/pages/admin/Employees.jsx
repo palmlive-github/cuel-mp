@@ -349,14 +349,15 @@ export default function Employees() {
         </span>
       </div>
 
-      {/* ตารางพนักงาน */}
+      {/* ตารางพนักงาน — scroll ตามขนาดจอ + Emp Code/Name ค้างซ้าย */}
       <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm overflow-hidden mb-5">
-        <div className="p-[18px] overflow-x-auto">
+        <div className="p-[18px]">
+          <div id="employee-table" className="table-scroll" style={{ '--table-offset': '450px', '--stick-l1': '80px' }}>
           <table className="tbl w-full border-collapse text-[12px]">
             <thead>
               <tr>
-                <th>Emp Code</th>
-                <th>Name</th>
+                <th className="stick-l0 w-20">Emp Code</th>
+                <th className="stick-l1">Name</th>
                 <th>Position</th>
                 <th>Dept</th>
                 <th>Department</th>
@@ -381,10 +382,10 @@ export default function Employees() {
                 const stClr = ST_COLOR[e.status] || '#94a3b8'
                 return (
                   <tr key={e.empCode}>
-                    <td>
+                    <td className="stick-l0">
                       <strong>{e.empCode}</strong>
                     </td>
-                    <td>{e.name}</td>
+                    <td className="stick-l1">{e.name}</td>
                     <td className="!text-[11px] !text-slate-500">{e.position}</td>
                     <td>
                       <span className="inline-block bg-primary-light text-primary rounded-[3px] px-1.5 py-px text-[10px] font-bold">
@@ -436,6 +437,7 @@ export default function Employees() {
               })}
             </tbody>
           </table>
+          </div>
           <div className="text-[10px] text-slate-400 px-0.5 py-1.5">
             ⚠ <strong>Resign Date</strong> is <em>not</em> loaded from Oracle — enter manually in the Edit modal if
             applicable.

@@ -227,29 +227,33 @@ export default function Consolidation() {
 
       {/* ตารางรวม */}
       <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm overflow-hidden mb-5">
-        <div className="p-[18px] overflow-x-auto">
+        <div className="p-[18px]">
+          <div id="consolidation-table" className="table-scroll" style={{ '--table-offset': '420px', '--stick-l1': '80px' }}>
           <table className="tbl w-full border-collapse text-[12px] min-w-[1700px]">
             <thead>
-              <tr>
-                <th>Emp Code</th>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Dept</th>
-                <th>Department</th>
-                <th>Emp Type</th>
-                <th>Alloc</th>
-                <th>Movement</th>
-                <th>Start Date</th>
-                <th>Mov Date</th>
-                <th>Main Project</th>
-                <th>Sub Status</th>
-                <th>Project</th>
+              <tr >
+                <th rowSpan={2}>Emp Code</th>
+                <th rowSpan={2}>Name</th>
+                <th rowSpan={2}>Position</th>
+                <th rowSpan={2}>Dept</th>
+                <th rowSpan={2}>Department</th>
+                <th rowSpan={2}>Emp Type</th>
+                <th rowSpan={2}>Alloc</th>
+                <th rowSpan={2}>Movement</th>
+                <th rowSpan={2}>Start Date</th>
+                <th rowSpan={2}>Mov Date</th>
+                <th rowSpan={2}>Main Project</th>
+                <th rowSpan={2}>Sub Status</th>
+                <th rowSpan={2}>Project</th>
+                <th rowSpan={1} colSpan={12} className="!text-center !bg-blue-400">Allocation {currentYear}</th>
+                <th rowSpan={2}>Remark</th>
+              </tr>
+              <tr className='subhead'>
                 {MONTHS.map((m) => (
-                  <th key={m} className="!text-center !px-1.5">
+                  <th rowSpan={1} key={m} className="!text-center !px-1.5">
                     {m}
                   </th>
                 ))}
-                <th>Remark</th>
               </tr>
             </thead>
             <tbody>
@@ -377,6 +381,7 @@ export default function Consolidation() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>

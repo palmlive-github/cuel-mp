@@ -85,9 +85,10 @@ export default function Years() {
         )}
       </div>
 
-      {/* card + ตาราง striped */}
+      {/* card + ตาราง striped — scroll ตามขนาดจอ */}
       <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm overflow-hidden mb-5">
-        <div className="p-[18px] overflow-x-auto">
+        <div className="p-[18px]">
+          <div id="budget-year-table" className="table-scroll" style={{ '--table-offset': '250px' }}>
           <table className="tbl tbl-striped w-full border-collapse text-[12px]">
             <thead>
               <tr>
@@ -151,6 +152,7 @@ export default function Years() {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 

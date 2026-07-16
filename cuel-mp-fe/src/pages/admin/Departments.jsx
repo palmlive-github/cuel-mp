@@ -294,7 +294,7 @@ export default function Departments() {
 
           {/* ---- Tab: Department List ---- */}
           {tab === 'list' && (
-            <div className="overflow-x-auto">
+            <div id="department-list-table" className="table-scroll">
               <table className="tbl w-full border-collapse text-[12px]">
                 <thead>
                   <tr>
@@ -349,7 +349,7 @@ export default function Departments() {
 
           {/* ---- Tab: Dept Groups ---- */}
           {tab === 'groups' && (
-            <div>
+            <div id="dept-groups-panel" className="table-scroll pr-1" style={{ '--table-offset': '310px' }}>
               <div className="flex items-center justify-between flex-wrap gap-2 mb-3.5">
                 <div className="text-[12px] text-slate-500">
                   Define groups for use in the <strong>By Department (YoY)</strong> analytical report. Groups are global
@@ -442,12 +442,12 @@ export default function Departments() {
                   </span>
                 </div>
               )}
-              <div className="overflow-x-auto">
+              <div id="dept-managers-table" className="table-scroll" style={{ '--table-offset': '330px' }}>
                 <table className="w-full border-collapse text-[12px]">
                   <thead>
                     <tr>
-                      <th className="tbl-th w-16 text-slate-400 text-[10px] font-semibold text-left px-2.5 py-1.5 bg-[#f1f5f9]">Code</th>
-                      <th className="text-[10px] font-semibold text-left px-2.5 py-1.5 bg-[#f1f5f9]">Department</th>
+                      <th className="stick-l0 w-16 text-slate-400 text-[10px] font-semibold text-left px-2.5 py-1.5 bg-[#f1f5f9]">Code</th>
+                      <th className="stick-l1 text-[10px] font-semibold text-left px-2.5 py-1.5 bg-[#f1f5f9]">Department</th>
                       <th className="text-[10px] font-semibold text-left px-2.5 py-1.5 bg-[#f1f5f9] text-slate-500 w-60">
                         Requester <span className="font-normal text-slate-400">(Optional)</span>
                       </th>
@@ -465,8 +465,8 @@ export default function Departments() {
                       const roles = assign[d.code] || { requester: '', approver: '', reviewer: '' }
                       return (
                         <tr key={d.code}>
-                          <td className="px-2.5 py-1.5 text-slate-500 text-[11px] border-b border-slate-100">{d.code}</td>
-                          <td className="px-2.5 py-1.5 text-[12px] border-b border-slate-100 whitespace-nowrap">
+                          <td className="stick-l0 px-2.5 py-1.5 text-slate-500 text-[11px] border-b border-slate-100">{d.code}</td>
+                          <td className="stick-l1 px-2.5 py-1.5 text-[12px] border-b border-slate-100 whitespace-nowrap">
                             {getDeptName(d, currentYear)}
                           </td>
                           <td className="px-2.5 py-1.5 border-b border-slate-100">{roleSelect(d.code, 'requester', roles.requester, pool)}</td>

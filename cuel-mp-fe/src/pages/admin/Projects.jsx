@@ -138,9 +138,10 @@ export default function Projects() {
         )}
       </div>
 
-      {/* project cards */}
+      {/* project cards — panel scroll ตามขนาดจอ */}
       <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm mb-5">
         <div className="p-[18px]">
+          <div id="project-cards-panel" className="table-scroll pr-1" style={{ '--table-offset': '270px' }}>
           {projects.length === 0 && (
             <div className="text-center text-slate-400 py-5">No projects for this year</div>
           )}
@@ -302,6 +303,7 @@ export default function Projects() {
               </div>
             )
           })}
+          </div>
         </div>
       </div>
 

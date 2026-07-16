@@ -1,0 +1,62 @@
+/* ==== ตาราง scroll ตามขนาดหน้าจอ (แนวทาง 1+2 ที่ตกลง) ====
+   ใช้ครอบตารางใหญ่: <div className="table-scroll"> พร้อมตั้ง offset ต่อจุดได้ด้วย
+   style={{ '--table-offset': '330px' }} (ค่าเริ่มต้น 290 = header 58 + page header + tabs + margins) */
+
+#employee-table.table-scroll {
+  overflow: auto;
+  max-height: calc(100dvh - 490px);
+  min-height: 240px; /* กันกรอบเตี้ยเกินบนจอเล็ก */
+}
+
+#submissions-table.table-scroll {
+  overflow: auto;
+  max-height: calc(100dvh - 410px);
+  min-height: 240px; /* กันกรอบเตี้ยเกินบนจอเล็ก */
+}
+
+#consolidation-table.table-scroll {
+  overflow: auto;
+  max-height: calc(100dvh - 375px);
+  min-height: 240px; /* กันกรอบเตี้ยเกินบนจอเล็ก */
+}
+
+.table-scroll {
+  overflow: auto;
+  max-height: calc(100dvh - var(--table-offset, 290px));
+  min-height: 240px; /* กันกรอบเตี้ยเกินบนจอเล็ก */
+}
+
+/* หัวตารางค้างตอนเลื่อนแนวตั้ง — ใช้ box-shadow แทนเส้นใต้ เพราะ border-collapse ทำให้เส้นเลื่อนหาย */
+.table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: inset 0 -2px 0 #e5eaf1;
+}
+
+/* หัวตาราง 2 แถว (เช่น แถวรวม "Allocation {year}" + แถวเดือนย่อย) — แถวที่ 2 ต้องค้างต่อจากแถวแรก
+  ไม่ทับกัน ตอนเลื่อนแนวตั้ง ใช้ --thead-row1-h ที่วัดความสูงจริงของแถวแรกมาตั้งค่า (ดู Consolidation.jsx) */
+.table-scroll thead tr.subhead th {
+  top: var(--thead-row1-h, 34px);
+}
+
+/* คอลัมน์ซ้ายค้างตอนเลื่อนแนวนอน (Code = ช่องแรก, Department = ช่องสอง เริ่มที่ 64px) */
+.table-scroll .stick-l0 {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: #fff;
+}
+.table-scroll .stick-l1 {
+  position: sticky;
+  left: var(--stick-l1, 64px); /* = ความกว้างคอลัมน์แรก — ตั้งต่อหน้าได้ผ่าน style */
+  z-index: 5;
+  background: #fff;
+  box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.1);
+}
+/* จุดตัดหัวตาราง × คอลัมน์ค้าง ต้องอยู่บนสุดและพื้นทึบสีหัวตาราง */
+.table-scroll thead .stick-l0,
+.table-scroll thead .stick-l1 {
+  z-index: 15;
+  background: #f1f5f9;
+}

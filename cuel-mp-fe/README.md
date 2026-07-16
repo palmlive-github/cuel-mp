@@ -32,6 +32,8 @@ src/
     employeeSlice.js Employees ต่อปี + freeze setup + Oracle staging + position list
     gpSlice.js       Graph Priority 3 แผงต่อปี (clamp + compact อัตโนมัติ)
     submissionSlice.js สถานะการส่งแผนต่อแผนกต่อปี + verify/reject/unverify + สี/label ป้ายสถานะ
+  styles/
+    table.css        .table-scroll — ตาราง scroll ตามความสูงจอ (max-height: 100dvh − offset) + sticky thead + sticky คอลัมน์ซ้าย (.stick-l0/.stick-l1)
   utils/
     gantt.jsx        ganttCells 12 เดือน (logic ตาม buildScopeGantt) + fmtDate — ใช้ร่วม Projects / Project Assumption
     manpower.js      กฎ Manpower กลาง: getValidMonthRange (กฎวันที่ 1), getProjMonthRange (Min/Max scope), getDeptProjects, getMostAllocatedProject, MONTH_KEYS
@@ -88,6 +90,27 @@ src/
 - User Guide ภาษาไทย: `../CUEL_ManpowerPlan_UserGuide_20260709_TH.pptx`
 
 ## บันทึกการเปลี่ยนแปลง (Changelog)
+
+### 2026-07-15 (5)
+- **ตาราง scroll ตามขนาดหน้าจอ ครบทุกหน้าที่มีตาราง/รายการใหญ่**:
+  - Budget Year Setup → `#budget-year-table` (offset 250px)
+  - Project Setup → `#project-cards-panel` (offset 270px — panel การ์ดโปรเจกต์ scroll แนวตั้ง, ตาราง scope ในการ์ดยัง scroll แนวนอนของตัวเอง)
+  - Department Submissions → `#submissions-table` (offset 420px เพราะมี stat cards + filter) + คอลัมน์ Code/Department ค้างซ้าย
+  - Corp Plan Consolidation → `#consolidation-table` (offset 420px) + คอลัมน์ Emp Code/Name ค้างซ้าย (ทำงานร่วมกับ rowSpan ได้)
+- สรุป: ทุกหน้า (Years / Projects / Departments / Employees / Dept Submissions / Consolidation) ใช้ `.table-scroll` ชุดเดียวกันจาก `src/styles/table.css`
+
+### 2026-07-15 (4)
+- **Employee Setup: ตาราง scroll ตามขนาดหน้าจอ** (`#employee-table`, offset 450px เพราะมี workflow guide + freeze bar + filter ด้านบน):
+  - ตารางพนักงาน 12 คอลัมน์ scroll ในกรอบ, หัวตารางค้าง, คอลัมน์ Emp Code (w-20) + Name ค้างซ้ายตอนเลื่อนแนวนอน
+  - หมายเหตุ "⚠ Resign Date is not loaded from Oracle" อยู่นอกกรอบ scroll — เห็นตลอด
+  - `.stick-l1` เปลี่ยนเป็นตำแหน่งซ้ายตาม `--stick-l1` (ค่าเริ่มต้น 64px สำหรับ Dept Managers, หน้านี้ 80px) และเพิ่ม `min-height: 240px` กันกรอบเตี้ยบนจอเล็ก
+
+### 2026-07-15 (3)
+- **Department Setup: ตาราง scroll ตามขนาดหน้าจอ** (แนวทางที่ตกลงกัน — เป็นการปรับปรุงเหนือต้นแบบซึ่งใช้ overflow-x อย่างเดียว):
+  - เพิ่ม `src/styles/table.css`: `.table-scroll` จำกัดความสูง `calc(100dvh - var(--table-offset, 290px))` + `thead th` sticky (ใช้ box-shadow แทนเส้นใต้กัน border-collapse เลื่อนหาย)
+  - แท็บ Department List (`#department-list-table`), Dept Groups (`#dept-groups-panel`, offset 310px), Dept Managers (`#dept-managers-table`, offset 330px เพราะมีแถบเตือน)
+  - แท็บ Dept Managers: คอลัมน์ Code + Department ค้างซ้ายตอนเลื่อนแนวนอน (`.stick-l0`/`.stick-l1` พร้อมเงาแบ่งเขต และพื้นทึบที่จุดตัดกับหัวตาราง)
+  - class ใช้ซ้ำได้ — หน้าอื่นที่ตารางใหญ่ (Employees, Consolidation, Dept Submissions) ครอบ `.table-scroll` ได้ทันที
 
 ### 2026-07-15 (2)
 - เพิ่มหน้า **Corp Plan Consolidation** (`corpplan/Consolidation.jsx`) ตามต้นแบบ:

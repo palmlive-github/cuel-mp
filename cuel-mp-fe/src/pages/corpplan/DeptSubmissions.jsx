@@ -204,12 +204,13 @@ export default function DeptSubmissions() {
             Showing {rows.length} of {departments.length} departments
           </span>
         </div>
-        <div className="p-[18px] overflow-x-auto">
+        <div className="p-[18px]">
+          <div id="submissions-table" className="table-scroll" style={{ '--table-offset': '420px', '--stick-l1': '70px' }}>
           <table className="tbl tbl-striped w-full border-collapse text-[12px]">
             <thead>
               <tr>
-                <th className="w-[70px]">Code</th>
-                <th>Department</th>
+                <th className="stick-l0 w-[70px]">Code</th>
+                <th className="stick-l1">Department</th>
                 <th className="w-40">Manager</th>
                 <th className="!text-center w-[130px]">Status</th>
                 <th className="w-[110px]">HC (D/I)</th>
@@ -229,10 +230,10 @@ export default function DeptSubmissions() {
               )}
               {rows.map(({ d, sub, st, approver, requester, hc, direct, indirect }) => (
                 <tr key={d.code}>
-                  <td>
+                  <td className="stick-l0">
                     <strong>{d.code}</strong>
                   </td>
-                  <td>{deptName(d.code)}</td>
+                  <td className="stick-l1">{deptName(d.code)}</td>
                   <td className="!text-[11px]">
                     {approver}
                     {requester && requester !== approver && (
@@ -288,6 +289,7 @@ export default function DeptSubmissions() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 
