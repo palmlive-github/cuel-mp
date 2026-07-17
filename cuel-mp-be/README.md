@@ -49,9 +49,14 @@ CEUS Portal ──Session──▶ FE /login?Session=xxx
   ครอบคลุม views/tables: VW_CEUS_User, VW_Department, VW_Employee_Assignments, VW_Employee_Latest_tAssignments,
   vw_CUEL_All_CEUS_User, VW_CEUS_All_Departments/Locations/Positions, Permission, UserApplication, ApplicationPermission,
   T_CEUS_AllUser_EmpInfo, T_CEUS_EmployeeSupervisor
-- **MP** (ฐานข้อมูลของระบบเอง) — connection string เตรียมไว้แล้ว ยังไม่ได้ scaffold/สร้าง schema
-  (ออกแบบไว้แล้วใน `../Manpower_Plan_Database_Design.docx` + `../Manpower_Plan_ERD.mermaid` — 15 ตาราง)
-- คำสั่ง scaffold ตัวอย่างอยู่ใน `Extensions/ConnectionService.cs`
+- **MP** (ฐานข้อมูลของระบบเอง) — ✅ สร้างจาก `../Manpower_Plan_Database_Create.sql` (rev.6) และ scaffold แล้ว:
+  - Entities 15 ตัวอยู่ที่ **`Models/`** (root): BudgetYear, Department, DepartmentYear, DeptGroup, DeptGroupMember,
+    Project, ProjectScope, Employee (staging), MpEmployee, Allocation, HrLoadAudit, DeptSubmission, StatusHistory,
+    EmailLog, GraphPriority — property เป็น PascalCase (Id, Year, EmpListStatus, ...) พร้อม navigation
+  - Context ชื่อ **`DatabaseContext`** ที่ `Database/DatabaseContext.cs` (map คอลัมน์ snake_case, unique index,
+    default values, collation `Thai_100_CI_AS`) — ลงทะเบียนใน `ConnectionService` ด้วย connection "MP"
+  - มี **Migrations** baseline แล้ว: `Migrations/20260717081744_InitialCreate` + ModelSnapshot
+    (การเปลี่ยน schema ครั้งถัดไปใช้ `dotnet ef migrations add <ชื่อ> --context DatabaseContext`)
 
 ## โครงสร้าง
 
@@ -80,7 +85,7 @@ Environment: Development ใช้ `appsettings.Development.json` (CEUS dev: dev
 
 ## สิ่งที่ยังต้องทำ
 
-1. สร้าง/scaffold **MP database** ตาม Database Design (15 ตาราง) แล้วเปิดใช้ connection "MP"
+1. ~~สร้าง/scaffold **MP database**~~ ✅ เสร็จแล้ว (2026-07-17) — ดูรายละเอียดหัวข้อ Database ด้านบน
 2. Business API: Years, Projects, Departments, Employees (Load Oracle/Freeze), Allocations, Submissions (workflow), Reports
 3. Email service (T1–T6 + Reminder 07:00 ตาม `../Specification/Manpower_Plan_Email_Notification_Design.html`) — มี Smtp config เตรียมไว้แล้ว
 4. Job Scheduler: โหลดพนักงาน Oracle → staging ทุกวัน 22:00
