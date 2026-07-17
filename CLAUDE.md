@@ -61,8 +61,11 @@ dotnet run   # localhost:5170 — Swagger ที่ root (Development)
   endpoints `/api/authentications/Token|Refresh|Me`, JwtMiddleware, roles: Admin MP0001 / HR MP0002 / User MP0003
   (+ Developper MP0000 bypass ผ่าน `AppSettings.Developpers`)
 - **CEUS DB**: scaffold read-only แล้ว (`Models/CEUS`, `DatabaseCeusContext`) — ห้ามเขียนลง CEUS
-- **ยังไม่มี**: MP database (schema ตาม Database Design 15 ตาราง), business APIs ทุกตัว,
-  email service (T1–T6/Reminder — Smtp config มีแล้ว), Oracle job 22:00
+- **MP database สร้าง + scaffold แล้ว** (2026-07-17, จาก `Manpower_Plan_Database_Create.sql` rev.6 —
+  ตาราง PascalCase, PK = id IDENTITY, SQL Server 2012) — entities 15 ตัวอยู่ที่ `Models/` (root),
+  context ชื่อ `DatabaseContext` ใน `Database/`, มี Migrations baseline `InitialCreate` แล้ว
+  (ระวัง: `DatabaseCeusContext` เป็น read-only ห้ามทำ migration)
+- **ยังไม่มี**: business APIs ทุกตัว, email service (T1–T6/Reminder — Smtp config มีแล้ว), Oracle job 22:00
 - ของค้างจากโปรเจกต์ MSR ที่รอเก็บกวาด: WeatherForecastController, Jwt issuer `msr-api`, permissions MSR001-5
 - Environment: Development ใช้ `appsettings.Development.json` (devf-ceus / DEVF-SVRDB15) ·
   Staging/Prod serve React build ในตัว (SPA fallback)
