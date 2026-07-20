@@ -19,11 +19,11 @@ public class CuelService : ICuelService
 
     public async Task<ICollection<Models.CEUS.VwCeusAllPosition>> GetPositions()
     {
-        return await _context.VwCeusAllPositions.ToListAsync();
+        return await _context.VwCeusAllPositions.AsNoTracking().ToListAsync();
     }
     public async Task<ICollection<Models.CEUS.VwCeusAllDepartment>> GetDepartments()
     {
-        return await _context.VwCeusAllDepartments.ToListAsync();
+        return await _context.VwCeusAllDepartments.AsNoTracking().ToListAsync();
     }
 
     internal string AnyPermission(string permissionCode)
@@ -40,7 +40,11 @@ public class CuelService : ICuelService
     public async Task<List<string>> PermissionAllowList(string[] permissionCodes)
     {
         List<string> roles = new List<string>();
-        List<string> permissions = await _context.ApplicationPermissions.Where(w => w.ApplicationCode == _ceus.ApplicationCode).Select(s => (s.PermissionCode ?? string.Empty)).ToListAsync();
+        List<string> permissions = await _context.ApplicationPermissions
+        .AsNoTracking()
+        .Where(w => w.ApplicationCode == _ceus.ApplicationCode)
+        .Select(s => (s.PermissionCode ?? string.Empty))
+        .ToListAsync();
 
         foreach (string permissionCode in permissionCodes)
         {
@@ -62,7 +66,7 @@ public class CuelService : ICuelService
     {
         try
         {
-            var employee = await _userService.FindAsync(userId);
+            var employee = await _userService.FindByUserIdAsync(userId);
             if (employee == null) throw new Exception($"UserId {userId} not found");
 
             var permissionAny = _context.ApplicationPermissions.Any(w => w.ApplicationCode == _ceus.ApplicationCode && w.PermissionCode == permissionCode && w.IsEnabled == true);
@@ -121,65 +125,5 @@ public class CuelService : ICuelService
         {
             throw new Exception(ex.Message);
         }
-    }
-
-    public async Task<Models.CEUS.VwEmployeeLatestTAssignment?> CuelEmployeeById(decimal personId)
-    {
-        Models.CEUS.VwEmployeeLatestTAssignment? result = null;
-
-        try
-        {
-            result = await _context.VwEmployeeLatestTAssignments.Where(w => w.PersonId == personId).FirstOrDefaultAsync();
-
-            if (result == null)
-                throw new Exception($"Data not found.");
-        }
-        catch (System.Exception ex)
-        {
-
-            throw new Exception($"{ServiceName}: {ex.Message}");
-        }
-
-        return result;
-    }
-
-    public async Task<Models.CEUS.TCeusAllUserEmpInfo?> CuelEmployeeByUserName(string username)
-    {
-        Models.CEUS.TCeusAllUserEmpInfo? result = null;
-
-        try
-        {
-            result = await _context.TCeusAllUserEmpInfos.Where(w => w.UserName == username).FirstOrDefaultAsync();
-
-            if (result == null)
-                throw new Exception($"Data not found.");
-        }
-        catch (System.Exception ex)
-        {
-
-            throw new Exception($"{ServiceName}: {ex.Message}");
-        }
-
-        return result;
-    }
-
-    public async Task<Models.CEUS.TCeusAllUserEmpInfo?> CuelAllCeusUserById(decimal personId)
-    {
-        Models.CEUS.TCeusAllUserEmpInfo? result = null;
-
-        try
-        {
-            result = await _context.TCeusAllUserEmpInfos.Where(w => w.PersonId == personId).FirstOrDefaultAsync();
-
-            if (result == null)
-                throw new Exception($"Data not found.");
-        }
-        catch (System.Exception ex)
-        {
-
-            throw new Exception($"{ServiceName}: {ex.Message}");
-        }
-
-        return result;
     }
 }

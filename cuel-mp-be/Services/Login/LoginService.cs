@@ -66,7 +66,7 @@ public class LoginService : ILoginService
 
                 if (userInfoCeus != null)
                 {
-                    Models.Customs.UserModel? employee = await _userService.FindAsync(userInfoCeus.userId);
+                    Models.Customs.UserModel? employee = await _userService.FindByUserIdAsync(userInfoCeus.userId);
                     if (employee != null)
                     {
                         List<string> roles = await _cuelService.PermissionAllowList(userInfoCeus.permissionCodes);
@@ -145,7 +145,7 @@ public class LoginService : ILoginService
         else
             userInfo.UserID = 0;
 
-        var employee = await _userService.FindAsync(userInfo.UserID);
+        var employee = await _userService.FindByUserIdAsync(userInfo.UserID);
         if(employee == null) throw new Exception("Permission denied");
 
         userInfo.UserName = employee.UserName;
